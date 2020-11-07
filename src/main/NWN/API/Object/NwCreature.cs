@@ -1430,5 +1430,11 @@ namespace NWN.API
       await WaitForObjectContext();
       return NWScript.GetIsWeaponEffective(target, offHand.ToInt()).ToBool();
     }
+
+    /// <summary>
+    /// Adjusts, positively or negatively, how this member of a whole faction views a specific creature.
+    /// </summary>
+    public void AdjustReputation(NwCreature creature, int adjustment)
+      => NWScript.AdjustReputation(creature, this, adjustment);
   }
 }
