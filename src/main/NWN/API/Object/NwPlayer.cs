@@ -15,7 +15,7 @@ namespace NWN.API
     /// </summary>
     public bool IsDM
     {
-      get => NWScript.GetIsDM(ObjectId).ToBool();
+      get => NWScript.GetIsDM(this).ToBool();
     }
 
     /// <summary>
@@ -81,6 +81,47 @@ namespace NWN.API
     public bool IsInCutsceneMode
     {
       get => NWScript.GetCutsceneMode(this).ToBool();
+    }
+
+    /// <summary>
+    /// Sets a value indicating whether this player's camera direction is currently locked.
+    /// </summary>
+    public bool CameraDirectionLocked
+    {
+      set => NWScript.LockCameraDirection(this, value.ToInt());
+    }
+
+    /// <summary>
+    /// Sets a value indicating whether this player's camera pitch is currently locked.
+    /// </summary>
+    public bool CameraPitchLocked
+    {
+      set => NWScript.LockCameraPitch(this, value.ToInt());
+    }
+
+    /// <summary>
+    /// Sets a value indicating whether this player's camera distance is currently locked.
+    /// </summary>
+    public bool CameraDistanceLocked
+    {
+      set => NWScript.LockCameraDistance(this, value.ToInt());
+    }
+
+    /// <summary>
+    /// Sets the camera to a certain height.
+    /// Setting this value to zero will restore the camera to the racial default height.
+    /// </summary>
+    public float CameraHeight
+    {
+      set => NWScript.SetCameraHeight(this, value);
+    }
+
+    /// <summary>
+    /// Sets the camera mode for this (player).
+    /// </summary>
+    public CameraMode SetCameraMode
+    {
+      set => NWScript.SetCameraMode(this, (int)value);
     }
 
     /// <summary>
@@ -391,34 +432,33 @@ namespace NWN.API
     /// <summary>
     /// Gives the specified XP to this player, adjusted by any multiclass penalty.
     /// </summary>
+    /// <param name="xPAmount">Amount of experience to give.</param>
     public void GiveXp(int xPAmount)
       => NWScript.GiveXPToCreature(this, xPAmount);
 
     /// <summary>
-    /// Locks the player's camera direction to its current direction,
-    /// or unlocks the player's camera direction to enable it to move freely again.
-    /// </summary>
-    public void LockCameraDirection(bool isLocked = true)
-      => NWScript.LockCameraDirection(this, isLocked.ToInt());
-
-    /// <summary>
-    /// Locks the player's camera pitch to its current pitch setting,
-    /// or unlocks the player's camera pitch.
-    /// </summary>
-    public void LockCameraPitch(bool isLocked = true)
-      => NWScript.LockCameraPitch(this, isLocked.ToInt());
-
-    /// <summary>
-    /// Locks the player's camera distance to its current distance setting,
-    /// or unlocks the player's camera distance.
-    /// </summary>
-    public void LockCameraDistance(bool isLocked = true)
-      => NWScript.LockCameraDistance(this, isLocked.ToInt());
-
-    /// <summary>
     /// Changes the current Day/Night cycle for this player to daylight.
     /// </summary>
+    /// <param name="delayTransitionTime">How long the transition should take.</param>
     public void NightToDay(TimeSpan delayTransitionTime = default)
       => NWScript.NightToDay(this, (float)delayTransitionTime.TotalSeconds);
-    }
+
+    /// <summary>
+    /// Changes the current Day/Night cycle for this player to night.
+    /// </summary>
+    /// <param name="delayTransitionTime">How long the transition should take.</param>
+    public void DayToNight(TimeSpan delayTransitionTime = default)
+      => NWScript.DayToNight(this, (float)delayTransitionTime.TotalSeconds);
+
+    /// <summary>
+    /// Removes any current fading effects or black screen from the monitor of this player.
+    /// </summary>
+    public void StopFade() => NWScript.StopFade(this);
+
+    /// <summary>
+    /// Instructs this player's screen to go black immediately.<br/>
+    /// If you want the screen to go black gradually, use FadeToBlack() instead.
+    /// </summary>
+    public void BlackScreen() => NWScript.BlackScreen(this);
+  }
 }
