@@ -1446,5 +1446,55 @@ namespace NWN.API
       await WaitForObjectContext();
       return NWScript.GetIsWeaponEffective(target, offHand.ToInt()).ToBool();
     }
+
+    /// <summary>
+    /// Causes this creature to consider another creature either friend, enemy, or neutral indefintely or for a fixed time.
+    /// </summary>
+    /// <param name="target">The other creature we are altering our reputation towards.</param>
+    /// <param name="reputation">The new reputation.</param>
+    /// <param name="decay">If true, the enmity decays over duration; otherwise it is indefinite.</param>
+    /// <param name="duration">Only used if decay is true. It is how long the enmity lasts.</param>
+    public void SetTemporaryReputation(NwCreature target, ReputationType reputation, bool decay = false, TimeSpan? duration = null)
+    {
+      duration ??= TimeSpan.FromSeconds(180);
+
+      switch (reputation)
+      {
+        case ReputationType.Friend:
+          NWScript.SetIsTemporaryFriend(target, this, decay.ToInt(), (float)duration.Value.TotalSeconds);
+          break;
+        case ReputationType.Enemy:
+          NWScript.SetIsTemporaryEnemy(target, this, decay.ToInt(), (float)duration.Value.TotalSeconds);
+          break;
+        case ReputationType.Neutral:
+          NWScript.SetIsTemporaryNeutral(target, this, decay.ToInt(), (float)duration.Value.TotalSeconds);
+          break;
+        default:
+          throw new ArgumentOutOfRangeException(nameof(reputation), reputation, null);
+      }
+    }
+
+    /// <summary>
+    /// Summons the animal companion of this (creature). If creature has no animal companion, nothing happens.
+    /// </summary>
+    public void SummonAnimalCompanion() => NWScript.SummonAnimalCompanion(this);
+
+    /// <summary>
+    /// Summons the familiar of this (creature). If creature has no familiar, nothing happens.
+    /// </summary>
+    public void SummonFamiliar() => NWScript.SummonFamiliar(this);
+
+    /// <summary>
+    /// This forces a creature to unpossess their familiar.
+    /// This does not work on any DM-controlled creatures.
+    /// </summary>
+    public void UnpossessFamiliar() => NWScript.UnpossessFamiliar(this);
+
+    /// <summary>
+    /// Changes the friendly or hostile feelings this (creature) may have towards another creature.
+    /// Not a global effect for all members of a faction.
+    /// </summary>
+    public void ClearPersonalReputation(NwCreature creature)
+      => NWScript.ClearPersonalReputation(creature, this);
   }
 }
